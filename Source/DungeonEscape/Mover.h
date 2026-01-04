@@ -30,12 +30,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MoveTime = 4.0f;
 
-	UPROPERTY(EditAnywhere)
-	bool ShouldMove = false;
-
 	UPROPERTY(VisibleAnywhere)
 	bool ReachedTarget = false;
 
 	FVector StartLocation;
 	FVector TargetLocation;
+
+	bool GetShouldMove();
+	void SetShouldMove(bool NewShouldMove);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	bool ShouldMove = false;
 };

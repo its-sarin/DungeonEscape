@@ -27,6 +27,11 @@ void UTriggerComponent::BeginPlay()
 		}
 	}
 
+	if (TriggerTag.IsNone())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerTag is not set in TriggerComponent on %s"), *GetOwner()->GetName());
+	}
+
 	if (IsPressurePlate)
 	{
 		OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapBegin);
@@ -40,18 +45,42 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 }
 
+void UTriggerComponent::Trigger(bool NewTriggerValue)
+{
+	IsTriggered = NewTriggerValue;
+
+	if (Mover)
+	{
+		Mover->SetShouldMove(IsTriggered);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot trigger mover because Mover is null in TriggerComponent on %s"), *GetOwner()->GetName());
+	}
+}
+
 void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->ActorHasTag("PressurePlateActivator") && Mover)
+	if (OtherActor && OtherActor->ActorHasTag(TriggerTag))
 	{
-		Mover->ShouldMove = true;
+		ActivatorCount++;
+
+		if (!IsTriggered)
+		{
+			Trigger(true);
+		}		
 	}	
 }
 
 void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && OtherActor->ActorHasTag("PressurePlateActivator") && Mover)
+	if (OtherActor && OtherActor->ActorHasTag(TriggerTag))
 	{
-		Mover->ShouldMove = false;
+		ActivatorCount--;
+
+		if (IsTriggered && !ActivatorCount)
+		{
+			Trigger(false);
+		}
 	}
 }
