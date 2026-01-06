@@ -27,15 +27,15 @@ void UTriggerComponent::BeginPlay()
 		}
 	}
 
-	if (TriggerTag.IsNone())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TriggerTag is not set in TriggerComponent on %s"), *GetOwner()->GetName());
-	}
-
 	if (IsPressurePlate)
 	{
 		OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapBegin);
 		OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapEnd);
+
+		if (TriggerTag.IsNone())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TriggerTag is not set in TriggerComponent on %s"), *GetOwner()->GetName());
+		}
 	}	
 }
 

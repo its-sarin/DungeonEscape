@@ -48,6 +48,10 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MouseLookAction;
+
+	/** Interact Input Action -- added */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	class UInputAction* InteractAction;
 	
 public:
 	ADungeonEscapeCharacter();
@@ -89,6 +93,8 @@ public:
 
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	void Interact();
 
 };
 

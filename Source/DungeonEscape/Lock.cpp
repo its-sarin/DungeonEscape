@@ -34,6 +34,7 @@ void ALock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UE_LOG(LogTemp, Warning, TEXT("Time in seconds since game start: %f"), GetWorld()->GetTimeSeconds());
 }
 
 bool ALock::GetIsKeyPlaced()
