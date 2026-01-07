@@ -10,6 +10,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DungeonEscape.h"
 
+#include "CollectableItem.h"
+#include "Lock.h"
+
 ADungeonEscapeCharacter::ADungeonEscapeCharacter()
 {
 	// Set size for collision capsule
@@ -62,7 +65,7 @@ void ADungeonEscapeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 		// Interact -- added
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ADungeonEscapeCharacter::Interact);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this, &ADungeonEscapeCharacter::Interact);
+	
 	}
 	else
 	{
@@ -72,9 +75,66 @@ void ADungeonEscapeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 void ADungeonEscapeCharacter::Interact()
 {
-	UE_LOG(LogTemp, Display, TEXT("Interact action triggered in DungeonEscapeCharacter"));
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * MaxInteractDistance);
+	// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f);
 
-	//GetWorld()->SweepSingleByChannel();
+	FCollisionShape InteractSphere = FCollisionShape::MakeSphere(InteractSphereRadius);
+	// DrawDebugSphere(GetWorld(), End, InteractSphereRadius, 12, FColor::Green, false, 2.0f);
+
+	FHitResult HitResult;
+	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel2, InteractSphere);
+
+	if (HasHit)
+	{
+		AActor* HitActor = HitResult.GetActor();
+
+		if (HitActor->ActorHasTag("CollectableItem"))
+		{
+			ACollectableItem* CollectableItem = Cast<ACollectableItem>(HitActor);
+			if (CollectableItem)
+			{
+				UE_LOG(LogDungeonEscape, Log, TEXT("Collectable Item with name %s"), *CollectableItem->ItemName);
+				Inventory.Add(CollectableItem->ItemName);
+				HitActor->Destroy();
+			}
+		}
+		else if (HitActor->ActorHasTag("Lock"))
+		{
+			ALock* LockActor = Cast<ALock>(HitActor);
+			if (LockActor)
+			{
+				// Is the lock empty?
+				if (!LockActor->GetIsKeyPlaced())
+				{
+					UE_LOG(LogDungeonEscape, Log, TEXT("Lock requires key: %s"), *LockActor->KeyItemName);
+					
+					// Do we have the key? If so, remove it from inventory
+					if (Inventory.RemoveSingle(LockActor->KeyItemName))
+					{
+						// Unlock the lock
+						UE_LOG(LogDungeonEscape, Log, TEXT("Unlocking lock with key: %s"), *LockActor->KeyItemName);						
+						LockActor->SetIsKeyPlaced(true);
+					}
+					else
+					{
+						UE_LOG(LogDungeonEscape, Log, TEXT("You do not have the required key: %s"), *LockActor->KeyItemName);
+					}
+				}
+				else
+				{
+					// Lock is already unlocked, so we can remove the key and add it back to inventory
+					UE_LOG(LogDungeonEscape, Log, TEXT("Removing key from lock: %s"), *LockActor->KeyItemName);
+					Inventory.Add(LockActor->KeyItemName);
+					LockActor->SetIsKeyPlaced(false);
+				}
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogDungeonEscape, Log, TEXT("'%s' Interacted with nothing"), *GetNameSafe(this));
+	}
 }
 
 
