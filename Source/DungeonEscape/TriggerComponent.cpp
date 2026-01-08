@@ -21,9 +21,11 @@ void UTriggerComponent::BeginPlay()
 	else
 	{		
 		Mover = ActorToTrigger->FindComponentByClass<UMover>();
-		if (!Mover)
+		Faller = ActorToTrigger->FindComponentByClass<UFaller>();
+		
+		if (!Mover && !Faller)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Mover component not found on ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("No Mover or Faller on ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
 		}
 	}
 
@@ -53,9 +55,13 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 	{
 		Mover->SetShouldMove(IsTriggered);
 	}
+	else if (Faller)
+	{
+		Faller->SetShouldFall(IsTriggered);
+	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot trigger mover because Mover is null in TriggerComponent on %s"), *GetOwner()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Cannot trigger mover because Mover or Faller is null in TriggerComponent on %s"), *GetOwner()->GetName());
 	}
 }
 

@@ -130,6 +130,18 @@ void ADungeonEscapeCharacter::Interact()
 				}
 			}
 		}
+		else if (HitActor->ActorHasTag("Switch"))
+		{
+			UE_LOG(LogDungeonEscape, Log, TEXT("'%s' Interacted with Switch '%s'"), *GetNameSafe(this), *GetNameSafe(HitActor));
+			if (UTriggerComponent* TriggerComp = HitActor->FindComponentByClass<UTriggerComponent>())
+			{
+				TriggerComp->Trigger(!TriggerComp->IsTriggered);
+			}
+			else
+			{
+				UE_LOG(LogDungeonEscape, Warning, TEXT("Switch '%s' has no Trigger Component"), *GetNameSafe(HitActor));
+			}
+		}
 	}
 	else
 	{

@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 
 #include "Mover.h"
+#include "Faller.h"
 
 #include "TriggerComponent.generated.h"
 
@@ -33,6 +34,7 @@ public:
 	AActor* ActorToTrigger;
 
 	UMover* Mover;
+	UFaller* Faller;
 
 	UPROPERTY(EditAnywhere)
 	bool IsPressurePlate = false;
