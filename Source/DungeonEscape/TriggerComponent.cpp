@@ -14,19 +14,47 @@ void UTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!ActorToTrigger)
+	if (ActorsToTrigger.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ActorToTrigger is not set in TriggerComponent on %s"), *GetOwner()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("ActorsToTrigger is not set in TriggerComponent on %s"), *GetOwner()->GetName());
 	}
 	else
 	{		
-		Mover = ActorToTrigger->FindComponentByClass<UMover>();
+		// Iterate through ActorsToTrigger and populate MoversToTrigger, FallersToTrigger, RotatorsToTrigger
+		for (AActor* Actor : ActorsToTrigger)
+		{
+			UMover* FoundMover = Actor->FindComponentByClass<UMover>();
+			if (FoundMover)
+			{
+				MoversToTrigger.Add(FoundMover);
+			}
+			UFaller* FoundFaller = Actor->FindComponentByClass<UFaller>();
+			if (FoundFaller)
+			{
+				FallersToTrigger.Add(FoundFaller);
+			}
+			URotatorComponent* FoundRotator = Actor->FindComponentByClass<URotatorComponent>();
+			if (FoundRotator)
+			{
+				RotatorsToTrigger.Add(FoundRotator);
+			}
+		}
+
+		if (MoversToTrigger.Num() == 0 && FallersToTrigger.Num() == 0 && RotatorsToTrigger.Num() == 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Mover, Faller, or RotatorComponent on any ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
+		}
+
+
+
+		/*Mover = ActorToTrigger->FindComponentByClass<UMover>();
 		Faller = ActorToTrigger->FindComponentByClass<UFaller>();
+		RotatorComp = ActorToTrigger->FindComponentByClass<URotatorComponent>();*/
 		
-		if (!Mover && !Faller)
+		/*if (!Mover && !Faller)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("No Mover or Faller on ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
-		}
+		}*/
 	}
 
 	if (IsPressurePlate)
@@ -51,7 +79,40 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 {
 	IsTriggered = NewTriggerValue;
 
-	if (Mover)
+	if (MoversToTrigger.Num() > 0)
+	{
+		for (UMover* Mover : MoversToTrigger)
+		{
+			if (Mover)
+			{
+				Mover->SetShouldMove(IsTriggered);
+			}
+		}
+	}
+
+	if (FallersToTrigger.Num() > 0)
+	{
+		for (UFaller* Faller : FallersToTrigger)
+		{
+			if (Faller)
+			{
+				Faller->SetShouldFall(IsTriggered);
+			}
+		}
+	}
+
+	if (RotatorsToTrigger.Num() > 0)
+	{
+		for (URotatorComponent* RotatorComp : RotatorsToTrigger)
+		{
+			if (RotatorComp)
+			{
+				RotatorComp->SetShouldRotate(IsTriggered);
+			}
+		}
+	}
+
+	/*if (Mover)
 	{
 		Mover->SetShouldMove(IsTriggered);
 	}
@@ -62,7 +123,7 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot trigger mover because Mover or Faller is null in TriggerComponent on %s"), *GetOwner()->GetName());
-	}
+	}*/
 }
 
 void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

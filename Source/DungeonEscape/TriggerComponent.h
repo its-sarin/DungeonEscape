@@ -7,6 +7,7 @@
 
 #include "Mover.h"
 #include "Faller.h"
+#include "RotatorComponent.h"
 
 #include "TriggerComponent.generated.h"
 
@@ -30,11 +31,19 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere)
-	AActor* ActorToTrigger;
+	//UPROPERTY(EditAnywhere)
+	//AActor* ActorToTrigger;
 
-	UMover* Mover;
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> ActorsToTrigger;
+
+	TArray<UMover*> MoversToTrigger;
+	TArray<UFaller*> FallersToTrigger;
+	TArray<URotatorComponent*> RotatorsToTrigger;
+
+	/*UMover* Mover;
 	UFaller* Faller;
+	URotatorComponent* RotatorComp;*/
 
 	UPROPERTY(EditAnywhere)
 	bool IsPressurePlate = false;
