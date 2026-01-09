@@ -74,5 +74,10 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 # Fab Assets
-Content/MedievalDungeon/*
+Content/MedievalDungeon/Maps/*
+Content/MedievalDungeon/Materials/*
+Content/MedievalDungeon/Meshes/*
+Content/MedievalDungeon/Particles/*
+Content/MedievalDungeon/Textures/*
 Content/StarterContent/*
+Content/FabAssets/*

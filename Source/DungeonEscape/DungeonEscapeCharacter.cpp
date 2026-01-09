@@ -64,7 +64,7 @@ void ADungeonEscapeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADungeonEscapeCharacter::LookInput);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &ADungeonEscapeCharacter::LookInput);
 
-		// Interact -- added
+		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ADungeonEscapeCharacter::Interact);
 	
 	}
@@ -95,7 +95,7 @@ void ADungeonEscapeCharacter::Interact()
 			ACollectableItem* CollectableItem = Cast<ACollectableItem>(HitActor);
 			if (CollectableItem)
 			{
-				UE_LOG(LogDungeonEscape, Log, TEXT("Collectable Item with name %s"), *CollectableItem->ItemName);
+				UE_LOG(LogDungeonEscape, Log, TEXT("Picked up Collectable Item with name %s"), *CollectableItem->ItemName);
 				Inventory.Add(CollectableItem->ItemName);
 				HitActor->Destroy();
 			}
