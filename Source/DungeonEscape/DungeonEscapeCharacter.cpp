@@ -12,6 +12,7 @@
 
 #include "CollectableItem.h"
 #include "Lock.h"
+#include "DoorLock.h"
 
 ADungeonEscapeCharacter::ADungeonEscapeCharacter()
 {
@@ -141,6 +142,34 @@ void ADungeonEscapeCharacter::Interact()
 			{
 				UE_LOG(LogDungeonEscape, Warning, TEXT("Switch '%s' has no Trigger Component"), *GetNameSafe(HitActor));
 			}
+		}
+		else if (HitActor->ActorHasTag("DoorLock"))
+		{
+			ADoorLock* DoorLockActor = Cast<ADoorLock>(HitActor);
+			if (DoorLockActor)
+			{
+				// Is the lock empty?
+				if (!DoorLockActor->GetIsKeyPlaced())
+				{
+					UE_LOG(LogDungeonEscape, Log, TEXT("Lock requires key: %s"), *DoorLockActor->KeyItemName);
+
+					// Do we have the key? If so, remove it from inventory
+					if (Inventory.RemoveSingle(DoorLockActor->KeyItemName))
+					{
+						// Unlock the lock
+						UE_LOG(LogDungeonEscape, Log, TEXT("Unlocking lock with key: %s"), *DoorLockActor->KeyItemName);
+						DoorLockActor->SetIsKeyPlaced(true);
+					}
+					else
+					{
+						UE_LOG(LogDungeonEscape, Log, TEXT("You do not have the required key: %s"), *DoorLockActor->KeyItemName);
+					}
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogDungeonEscape, Log, TEXT("'%s' Interacted with unknown Actor '%s'"), *GetNameSafe(this), *GetNameSafe(HitActor));
 		}
 	}
 	else
