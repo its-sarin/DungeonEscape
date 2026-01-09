@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TriggerComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
 #include "DoorLock.generated.h"
 
 UCLASS()
@@ -36,6 +37,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* LockOpenMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere)
 	FString KeyItemName;

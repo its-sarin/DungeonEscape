@@ -39,6 +39,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString KeyItemName;
 
+	// TODO: Add boolean variable to permit or disallow picking up the key once it's placed in the lock
+
 	bool GetIsKeyPlaced();
 	void SetIsKeyPlaced(bool NewIsKeyPlaced);
 

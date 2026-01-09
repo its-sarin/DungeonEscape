@@ -3,6 +3,7 @@
 
 #include "Mover.h"
 #include "Math/UnrealMathUtility.h"
+#include "Components/AudioComponent.h" // Add this include to resolve UAudioComponent
 
 // Sets default values for this component's properties
 UMover::UMover()
@@ -53,10 +54,31 @@ void UMover::SetShouldMove(bool NewShouldMove)
 
 	if (ShouldMove)
 	{
+		// If should play sound and actor has an audio component, play sound
+		if (ShouldPlaySound)
+		{
+			UAudioComponent* AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
+			if (AudioComp)
+			{
+				AudioComp->Stop(); // Stop any currently playing sound
+				AudioComp->Play();
+			}
+		}
+
 		TargetLocation = StartLocation + MoveOffset;
 	}
 	else
 	{
+		// If should play sound and actor has an audio component, play sound
+		//if (ShouldPlaySound)
+		//{
+		//	UAudioComponent* AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
+		//	if (AudioComp)
+		//	{
+		//		AudioComp->Stop(); // Stop any currently playing sound
+		//		AudioComp->Play();
+		//	}
+		//}
 		TargetLocation = StartLocation;
 	}
 }

@@ -24,13 +24,14 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditAnywhere)
+	bool ShouldPlaySound = false;
+
 	bool GetShouldFall();
 	void SetShouldFall(bool NewShouldFall);
 
+private:
 	UPROPERTY(EditAnywhere)
 	bool ShouldFall = false;
-
-private:
-	
 		
 };

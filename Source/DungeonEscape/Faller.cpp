@@ -2,6 +2,7 @@
 
 
 #include "Faller.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values for this component's properties
 UFaller::UFaller()
@@ -29,18 +30,6 @@ void UFaller::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
-	//if (ShouldFall)
-	//{
-	//	// Enable simulate physics on root component
-	//	if (AActor* Owner = GetOwner())
-	//	{
-	//		if (UPrimitiveComponent* RootComp = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
-	//		{
-	//			RootComp->SetSimulatePhysics(true);
-	//		}
-	//	}
-	//}
 }
 
 bool UFaller::GetShouldFall()
@@ -59,6 +48,15 @@ void UFaller::SetShouldFall(bool NewShouldFall)
 		{
 			if (UPrimitiveComponent* RootComp = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
 			{
+				if (ShouldPlaySound)
+				{
+					UAudioComponent* AudioComp = Owner->FindComponentByClass<UAudioComponent>();
+					if (AudioComp)
+					{
+						AudioComp->Play();
+					}
+				}
+
 				RootComp->SetSimulatePhysics(true);
 			}
 		}

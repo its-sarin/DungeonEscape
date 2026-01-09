@@ -2,6 +2,7 @@
 
 
 #include "RotatorComponent.h"
+#include "Components/AudioComponent.h" 
 
 // Sets default values for this component's properties
 URotatorComponent::URotatorComponent()
@@ -58,6 +59,15 @@ void URotatorComponent::SetShouldRotate(bool NewShouldRotate)
 
 	if (ShouldRotate)
 	{
+		// If should play sound and actor has an audio component, play sound
+		if (ShouldPlaySound)
+		{
+			UAudioComponent* AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
+			if (AudioComp)
+			{				
+				AudioComp->Play();
+			}
+		}
 		TargetRotation = StartRotation + RotationOffset;
 	}
 }

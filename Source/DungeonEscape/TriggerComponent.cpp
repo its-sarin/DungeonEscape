@@ -38,6 +38,11 @@ void UTriggerComponent::BeginPlay()
 			{
 				RotatorsToTrigger.Add(FoundRotator);
 			}
+			ULightComponent* FoundLight = Actor->FindComponentByClass<ULightComponent>();
+			if (FoundLight)
+			{
+				LightsToToggle.Add(FoundLight);
+			}
 		}
 
 		if (MoversToTrigger.Num() == 0 && FallersToTrigger.Num() == 0 && RotatorsToTrigger.Num() == 0)
@@ -108,6 +113,17 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 			if (RotatorComp)
 			{
 				RotatorComp->SetShouldRotate(IsTriggered);
+			}
+		}
+	}
+
+	if (LightsToToggle.Num() > 0 && IsTriggered)
+	{
+		for (ULightComponent* LightComp : LightsToToggle)
+		{
+			if (LightComp)
+			{
+				LightComp->SetVisibility(!LightComp->IsVisible());
 			}
 		}
 	}

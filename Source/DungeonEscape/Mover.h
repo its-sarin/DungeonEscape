@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MoveTime = 4.0f;
 
+	UPROPERTY(EditAnywhere)
+	bool ShouldPlaySound = false;
+
 	UPROPERTY(VisibleAnywhere)
 	bool ReachedTarget = false;
 

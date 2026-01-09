@@ -31,6 +31,9 @@ public:
 	float RotateTime = 4.0f;
 
 	UPROPERTY(EditAnywhere)
+	bool ShouldPlaySound = false;
+
+	UPROPERTY(EditAnywhere)
 	bool ShouldRotateOnBeginPlay = false;
 
 	bool GetShouldRotate();

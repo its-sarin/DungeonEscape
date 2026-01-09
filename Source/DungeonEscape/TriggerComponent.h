@@ -8,6 +8,8 @@
 #include "Mover.h"
 #include "Faller.h"
 #include "RotatorComponent.h"
+#include "Components/LightComponent.h"
+
 
 #include "TriggerComponent.generated.h"
 
@@ -40,6 +42,8 @@ public:
 	TArray<UMover*> MoversToTrigger;
 	TArray<UFaller*> FallersToTrigger;
 	TArray<URotatorComponent*> RotatorsToTrigger;
+	TArray<ULightComponent*> LightsToToggle;
+
 
 	/*UMover* Mover;
 	UFaller* Faller;

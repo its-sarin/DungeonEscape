@@ -21,6 +21,9 @@ ADoorLock::ADoorLock()
 	LockOpenMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Lock Open Mesh"));
 	LockOpenMesh->SetupAttachment(RootComp);
 
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComp->SetupAttachment(RootComp);
+
 	Tags.Add(FName("DoorLock"));
 }
 
@@ -53,6 +56,8 @@ void ADoorLock::SetIsKeyPlaced(bool NewIsKeyPlaced)
 	if (NewIsKeyPlaced)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("DoorLock: Key placed, lock opened."));
+
+		AudioComp->Play();
 
 		// Enable Simulate Physics on the LockOpenMesh to allow it to fall
 		LockOpenMesh->SetSimulatePhysics(true);
