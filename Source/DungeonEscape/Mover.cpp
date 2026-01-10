@@ -22,6 +22,13 @@ void UMover::BeginPlay()
 	Super::BeginPlay();
 
 	StartLocation = GetOwner()->GetActorLocation();
+	AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
+	
+	if (ShouldMoveOnBeginPlay) 
+	{ 
+		SetShouldMove(true);
+		return;
+	}
 	SetShouldMove(false);
 }
 
@@ -40,6 +47,13 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
 		GetOwner()->SetActorLocation(NewLocation);
 	}
+	else
+	{
+		if (ShouldPlaySound && AudioComp)
+		{
+			AudioComp->Stop(); // Stop any currently playing sound
+		}
+	}
 	
 }
 
@@ -55,14 +69,9 @@ void UMover::SetShouldMove(bool NewShouldMove)
 	if (ShouldMove)
 	{
 		// If should play sound and actor has an audio component, play sound
-		if (ShouldPlaySound)
+		if (ShouldPlaySound && AudioComp)
 		{
-			UAudioComponent* AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
-			if (AudioComp)
-			{
-				AudioComp->Stop(); // Stop any currently playing sound
-				AudioComp->Play();
-			}
+			PlaySound();
 		}
 
 		TargetLocation = StartLocation + MoveOffset;
@@ -70,16 +79,17 @@ void UMover::SetShouldMove(bool NewShouldMove)
 	else
 	{
 		// If should play sound and actor has an audio component, play sound
-		//if (ShouldPlaySound)
-		//{
-		//	UAudioComponent* AudioComp = GetOwner()->FindComponentByClass<UAudioComponent>();
-		//	if (AudioComp)
-		//	{
-		//		AudioComp->Stop(); // Stop any currently playing sound
-		//		AudioComp->Play();
-		//	}
-		//}
+		if (ShouldPlaySound && AudioComp)
+		{
+			PlaySound();
+		}
 		TargetLocation = StartLocation;
 	}
+}
+
+void UMover::PlaySound()
+{
+	AudioComp->Stop(); // Stop any currently playing sound
+	AudioComp->Play();
 }
 

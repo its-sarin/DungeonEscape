@@ -26,6 +26,11 @@ void ALock::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (HasKeyOnBeginPlay)
+	{
+		SetIsKeyPlaced(true);
+		return;
+	}
 	SetIsKeyPlaced(false);
 }
 
@@ -43,6 +48,11 @@ bool ALock::GetIsKeyPlaced()
 
 void ALock::SetIsKeyPlaced(bool NewIsKeyPlaced)
 {
+	if (!CanPickupKeyAfterPlaced && IsKeyPlaced && !NewIsKeyPlaced)
+	{
+		// Do not allow unplacing the key if CanPickupKeyAfterPlaced is false
+		return;
+	}
 	IsKeyPlaced = NewIsKeyPlaced;
 
 	TriggerComp->Trigger(NewIsKeyPlaced);

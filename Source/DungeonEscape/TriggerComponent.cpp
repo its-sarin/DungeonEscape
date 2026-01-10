@@ -117,7 +117,7 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 		}
 	}
 
-	if (LightsToToggle.Num() > 0 && IsTriggered)
+	if (LightsToToggle.Num() > 0)
 	{
 		for (ULightComponent* LightComp : LightsToToggle)
 		{

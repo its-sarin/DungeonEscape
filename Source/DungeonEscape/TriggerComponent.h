@@ -39,9 +39,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<AActor*> ActorsToTrigger;
 
+	UPROPERTY(VisibleAnywhere)
 	TArray<UMover*> MoversToTrigger;
+	UPROPERTY(VisibleAnywhere)
 	TArray<UFaller*> FallersToTrigger;
+	UPROPERTY(VisibleAnywhere)
 	TArray<URotatorComponent*> RotatorsToTrigger;
+	UPROPERTY(VisibleAnywhere)
 	TArray<ULightComponent*> LightsToToggle;
 
 

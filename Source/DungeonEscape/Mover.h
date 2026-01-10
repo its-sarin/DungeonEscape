@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool ShouldPlaySound = false;
 
+	UPROPERTY(EditAnywhere)
+	bool ShouldMoveOnBeginPlay = false;
+
 	UPROPERTY(VisibleAnywhere)
 	bool ReachedTarget = false;
 
@@ -45,4 +48,8 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool ShouldMove = false;
+
+	UAudioComponent* AudioComp;
+
+	void PlaySound();
 };
