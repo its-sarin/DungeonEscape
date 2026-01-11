@@ -31,7 +31,7 @@ public:
 	void SetShouldFall(bool NewShouldFall);
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	bool ShouldFall = false;
 		
 };

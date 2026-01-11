@@ -23,6 +23,13 @@ void UTriggerComponent::BeginPlay()
 		// Iterate through ActorsToTrigger and populate MoversToTrigger, FallersToTrigger, RotatorsToTrigger
 		for (AActor* Actor : ActorsToTrigger)
 		{
+			// Check for null Actor
+			if (!Actor)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Null Actor in ActorsToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
+				continue;
+			}
+
 			UMover* FoundMover = Actor->FindComponentByClass<UMover>();
 			if (FoundMover)
 			{
@@ -45,21 +52,10 @@ void UTriggerComponent::BeginPlay()
 			}
 		}
 
-		if (MoversToTrigger.Num() == 0 && FallersToTrigger.Num() == 0 && RotatorsToTrigger.Num() == 0)
+		if (MoversToTrigger.Num() == 0 && FallersToTrigger.Num() == 0 && RotatorsToTrigger.Num() == 0 && LightsToToggle.Num() == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("No Mover, Faller, or RotatorComponent on any ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("No Mover, Faller, RotatorComponent, or LightComponent on any ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
 		}
-
-
-
-		/*Mover = ActorToTrigger->FindComponentByClass<UMover>();
-		Faller = ActorToTrigger->FindComponentByClass<UFaller>();
-		RotatorComp = ActorToTrigger->FindComponentByClass<URotatorComponent>();*/
-		
-		/*if (!Mover && !Faller)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Mover or Faller on ActorToTrigger in TriggerComponent on %s"), *GetOwner()->GetName());
-		}*/
 	}
 
 	if (IsPressurePlate)
@@ -127,19 +123,6 @@ void UTriggerComponent::Trigger(bool NewTriggerValue)
 			}
 		}
 	}
-
-	/*if (Mover)
-	{
-		Mover->SetShouldMove(IsTriggered);
-	}
-	else if (Faller)
-	{
-		Faller->SetShouldFall(IsTriggered);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot trigger mover because Mover or Faller is null in TriggerComponent on %s"), *GetOwner()->GetName());
-	}*/
 }
 
 void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -157,7 +140,7 @@ void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && OtherActor->ActorHasTag(TriggerTag))
+	if (OtherActor && OtherActor->ActorHasTag(TriggerTag) && !StayTriggeredWhenActorRemoved)
 	{
 		ActivatorCount--;
 

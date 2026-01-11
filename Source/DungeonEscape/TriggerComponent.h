@@ -48,19 +48,17 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TArray<ULightComponent*> LightsToToggle;
 
-
-	/*UMover* Mover;
-	UFaller* Faller;
-	URotatorComponent* RotatorComp;*/
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Pressure Plate")
 	bool IsPressurePlate = false;
+
+	UPROPERTY(EditAnywhere, Category = "Pressure Plate", meta = (EditCondition = "IsPressurePlate", EditConditionHides))
+	bool StayTriggeredWhenActorRemoved = false;
+
+	UPROPERTY(EditAnywhere, Category = "Pressure Plate")
+	FName TriggerTag;
 
 	UPROPERTY(VisibleAnywhere)
 	bool IsTriggered = false;
-
-	UPROPERTY(EditAnywhere)
-	FName TriggerTag;
 
 	void Trigger(bool NewTriggerValue);
 
